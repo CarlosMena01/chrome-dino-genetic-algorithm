@@ -33,9 +33,6 @@ class Gen():
     def __init__(self, code=[0, 0, 0, 0]) -> None:
         self.code = [0, 0, 0, 0]
         self.set_code(code)
-        self.binary = ""
-        for value in self.code:
-            self.binary += format(value, '08b')
 
     def __str__(self) -> str:
         return str(self.get_code())
