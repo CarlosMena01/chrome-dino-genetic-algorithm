@@ -64,12 +64,25 @@ class Chromosome():
     """Each Chromosome have 24 gens (the meaning of the life in reverse)
     also the Chromosome can combinate with other Chromosomes and just mutate itself.
     """
+    global nn_layers, chromosome_len
 
     def __init__(self, sequence=[]) -> None:
         if len(sequence) != chromosome_len:
-            sequence = [Gen([random.randint(0, 6) for _ in range(4)])
-                        for _ in range(chromosome_len)]
+            # Then create a random Chromosome
+            sequence = []
+            for _ in range(chromosome_len):
+                # Some optimizations for the architecture to get more uniform gens
+                new_gen = [random.randint(0, len(nn_layers) - 1), random.randint(
+                    0, nn_layers[0]), random.randint(0, nn_layers[0]), random.randint(-6, 6)]
+                sequence.append(Gen(new_gen))
+
         self.set_sequence(sequence)
+
+    def __str__(self) -> str:
+        text = ""
+        for gen in self.get_sequence():
+            text += str(gen) + "\n"
+        return text
 
     def set_sequence(self, sequence) -> None:
         if len(sequence) != chromosome_len:
@@ -113,31 +126,27 @@ class NN():
     6. The velocity of the game 
     """
 
+    global nn_layers, chromosome_len
+
     def __init__(self, chromosome: Chromosome) -> None:
         self.chromosome = chromosome
+        self.activation_function = relu
 
     def predict(self, input: np.ndarray) -> np.ndarray:
-        return np.dot(self.weights, input)
+        # Calculate the first layer (after the input)
+        layer1 = np.zeros(nn_layers[1])
+        # Get the ponderation for each connection
+        for gen in self.chromosome.get_sequence():
+            code = gen.get_code()
+            if code[0] == 0:  # The connection start from the input layer
+                layer1[code[2]] += input[code[1]]*code[3]
+        # Use the activation fuction
+        print(layer1)
+        layer1 = self.activation_function(layer1)
+        return layer1
 
 
-print("PADRE")
-test1 = Chromosome()
-for elem in test1.get_sequence():
-    print(elem)
-
-print("MADRE")
-test2 = Chromosome()
-for elem in test2.get_sequence():
-    print(elem)
-print("HIJO")
-child = test1.mix(test2)
-for elem in child.get_sequence():
-    print(elem)
-
-# test = Gen([2, 3, 0, 2])
-# print(test.code)
-# for _ in range(6):
-#     test.mute()
-#     print(test.code)
-# test = NN(np.asarray([np.arange(5) for i in range(5)]))
-# print(test.predict(np.arange(5)))
+test = NN(Chromosome())
+print(test.chromosome)
+print("Input: ", np.arange(6))
+test.predict(np.arange(6))
