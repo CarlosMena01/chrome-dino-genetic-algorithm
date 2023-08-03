@@ -131,6 +131,7 @@ class Agent():
     global nn_layers, chromosome_len, nn_umbral
 
     def __init__(self, chromosome=None) -> None:
+        self.score = 0
         if type(chromosome) != Chromosome:
             self.chromosome = Chromosome()
         self.activation_function = leaky_relu
