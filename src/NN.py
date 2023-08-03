@@ -1,8 +1,9 @@
 import numpy as np
 import random
 # This code just work for the example, so lets define the architecture
-nn_layers = [6, 6, 3, 2]
-chromosome_len = 4
+nn_layers = [6, 6, 2]
+chromosome_len = 24
+nn_umbral = 0.5
 
 # Activation functions
 
@@ -126,11 +127,12 @@ class NN():
     6. The velocity of the game 
     """
 
-    global nn_layers, chromosome_len
+    global nn_layers, chromosome_len, nn_umbral
 
     def __init__(self, chromosome: Chromosome) -> None:
         self.chromosome = chromosome
-        self.activation_function = relu
+        self.activation_function = leaky_relu
+        self.final_fuction = sigmoid
 
     def predict(self, input: np.ndarray) -> np.ndarray:
         # Calculate the first layer (after the input)
@@ -141,12 +143,23 @@ class NN():
             if code[0] == 0:  # The connection start from the input layer
                 layer1[code[2]] += input[code[1]]*code[3]
         # Use the activation fuction
-        print(layer1)
         layer1 = self.activation_function(layer1)
-        return layer1
+
+        # Calculate the next layer
+        layer2 = np.zeros(nn_layers[2])
+        # Get the ponderation for each connection
+        for gen in self.chromosome.get_sequence():
+            code = gen.get_code()
+            if code[0] == 1:  # The connection start from the first layer
+                layer2[code[2]] += layer1[code[1]]*code[3]
+        # Use the activation fuction
+        layer2 = self.final_fuction(layer2)
+
+        output = [0 if value <= nn_umbral else 1 for value in layer2]
+        return output
 
 
 test = NN(Chromosome())
 print(test.chromosome)
 print("Input: ", np.arange(6))
-test.predict(np.arange(6))
+print(test.predict(np.arange(6)))
