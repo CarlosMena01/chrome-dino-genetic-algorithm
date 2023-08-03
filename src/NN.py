@@ -130,8 +130,9 @@ class Agent():
 
     global nn_layers, chromosome_len, nn_umbral
 
-    def __init__(self, chromosome: Chromosome) -> None:
-        self.chromosome = chromosome
+    def __init__(self, chromosome=None) -> None:
+        if type(chromosome) != Chromosome:
+            self.chromosome = Chromosome()
         self.activation_function = leaky_relu
         self.final_fuction = sigmoid
 
@@ -166,9 +167,3 @@ class Agent():
 
         output = [0 if value <= nn_umbral else 1 for value in layer2]
         return output
-
-
-test = Agent(Chromosome())
-print(test.chromosome)
-print("Input: ", np.arange(6))
-print(test.predict(np.arange(6)))
