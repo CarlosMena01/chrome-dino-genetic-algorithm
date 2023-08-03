@@ -24,10 +24,11 @@ def leaky_relu(z: np.ndarray) -> np.ndarray:
 
 
 class Gen():
-    global nn_layers
-    """Each gen is a sequense of 4 numbers, the start layer, departure neuron, arrival neuron and the 
+    """ A gen is a representation of a conection in the Neuronal Network
+    Each gen is a sequense of 4 numbers, the start layer, departure neuron, arrival neuron and the 
     weight
     """
+    global nn_layers
 
     def __init__(self, code=[0, 0, 0, 0]) -> None:
         self.code = [0, 0, 0, 0]
@@ -105,7 +106,8 @@ class Chromosome():
 
 
 class NN():
-    """The NN have as input 6 parameters
+    """ This class represent a Neuronal Network that is create from a Chromosome
+    The NN have as input 6 parameters
     1. The x coordenate of the obstacle
     2. The y coordenate of the obstacle
     3. The high of the obstacle 
@@ -114,8 +116,8 @@ class NN():
     6. The velocity of the game 
     """
 
-    def __init__(self, weights: np.ndarray) -> None:
-        self.weights = weights
+    def __init__(self, chromosome: Chromosome) -> None:
+        self.chromosome = chromosome
 
     def predict(self, input: np.ndarray) -> np.ndarray:
         return np.dot(self.weights, input)
