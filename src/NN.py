@@ -116,8 +116,9 @@ class Chromosome():
         return children
 
 
-class NN():
-    """ This class represent a Neuronal Network that is create from a Chromosome
+class Agent():
+    """ This class represent a Agent that based on his chromosome can make predictions
+    the prediction have 2 values, in the game this values are the up-arrow and the down-arrow
     The NN have as input 6 parameters
     1. The x coordenate of the obstacle
     2. The y coordenate of the obstacle
@@ -133,6 +134,14 @@ class NN():
         self.chromosome = chromosome
         self.activation_function = leaky_relu
         self.final_fuction = sigmoid
+
+    def mute(self) -> None:
+        self.chromosome.mute()
+
+    def reproduce(self, other_agent):
+        childern_chromosome = self.chromosome.mix(other_agent.chromosome)
+        childern = Agent(childern_chromosome)
+        return childern
 
     def predict(self, input: np.ndarray) -> np.ndarray:
         # Calculate the first layer (after the input)
@@ -159,7 +168,7 @@ class NN():
         return output
 
 
-test = NN(Chromosome())
+test = Agent(Chromosome())
 print(test.chromosome)
 print("Input: ", np.arange(6))
 print(test.predict(np.arange(6)))
