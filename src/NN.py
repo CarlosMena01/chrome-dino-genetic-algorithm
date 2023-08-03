@@ -68,15 +68,18 @@ class Chromosome():
     """
 
     def __init__(self, sequence=[]) -> None:
-        self.sequence = [Gen([random.randint(0, 6) for _ in range(4)])
-                         for _ in range(chromosome_len)]
+        if len(sequence) != chromosome_len:
+            sequence = [Gen([random.randint(0, 6) for _ in range(4)])
+                        for _ in range(chromosome_len)]
         self.set_sequence(sequence)
 
     def set_sequence(self, sequence) -> None:
         if len(sequence) != chromosome_len:
+            print(f"The sequence need {chromosome_len} elements")
             return None
-        for element in sequence:
-            if type(element) != Chromosome:
+        for i, element in enumerate(sequence):
+            if type(element) != Gen:
+                print(f"The element {i} is not a Gen is {type(element)}")
                 return None
         self.sequence = sequence
 
@@ -91,17 +94,12 @@ class Chromosome():
             self.set_sequence(new_sequence)
 
     def mix(self, parent):
-        children = Chromosome(self.get_sequence())
-        random_sample = random.sample(parent.get_sequence(),
-                                      random.randint(0, chromosome_len-1))
-
-        for i, element in enumerate(random_sample):
-            new_chromosome = children.get_sequence()
-            new_chromosome[i] = element
-            print("------")
-            print(new_chromosome)
-            print("------")
-            children.set_sequence(new_chromosome)
+        mother = self.get_sequence()
+        father = parent.get_sequence()
+        new_sequence = mother + father
+        random.shuffle(new_sequence)
+        new_sequence = new_sequence[:chromosome_len]
+        children = Chromosome(new_sequence)
 
         return children
 
