@@ -97,7 +97,7 @@ class Dinosaur:
             self.dino_duck = True
             self.dino_run = False
             self.dino_jump = False
-        elif (sum(actions) == 0) and not self.dino_jump:  # Both are zero
+        elif (sum(actions) == 0 or sum(actions) == 2) and not self.dino_jump:  # Both are zero
             self.dino_duck = False
             self.dino_run = True
             self.dino_jump = False
@@ -270,12 +270,13 @@ def main():
         userInput = pygame.key.get_pressed()
 
         player.draw(SCREEN)
+
+        actions = [0, 0]
         if (userInput[pygame.K_UP] or userInput[pygame.K_SPACE]):
-            actions = [1, 0]
+            actions[0] = 1
         elif userInput[pygame.K_DOWN]:
-            actions = [0, 1]
-        elif not (userInput[pygame.K_UP] or userInput[pygame.K_DOWN]):
-            actions = [0, 0]
+            actions[1] = 1
+
         player.update(actions)
 
         if len(obstacles) == 0:
