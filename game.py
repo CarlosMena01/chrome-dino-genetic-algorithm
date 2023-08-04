@@ -1,6 +1,7 @@
 import os
 import random
-import threading
+from src.NN import Agent
+import numpy as np
 
 import pygame
 
@@ -207,6 +208,8 @@ def main():
     death_count = 0
     pause = False
 
+    agent = Agent()
+
     def score():
         global points, game_speed
         points += 1
@@ -267,18 +270,7 @@ def main():
 
         SCREEN.fill((255, 255, 255))
 
-        userInput = pygame.key.get_pressed()
-
-        player.draw(SCREEN)
-
         actions = [0, 0]
-        if (userInput[pygame.K_UP] or userInput[pygame.K_SPACE]):
-            actions[0] = 1
-        elif userInput[pygame.K_DOWN]:
-            actions[1] = 1
-
-        player.update(actions)
-
         if len(obstacles) == 0:
             if random.randint(0, 2) == 0:
                 obstacles.append(SmallCactus(SMALL_CACTUS))
@@ -286,6 +278,17 @@ def main():
                 obstacles.append(LargeCactus(LARGE_CACTUS))
             elif random.randint(0, 2) == 2:
                 obstacles.append(Bird(BIRD))
+        else:
+            data = [obstacles[0].rect.x, obstacles[0].rect.y,
+                    obstacles[0].rect.height,  obstacles[0].rect.width, player.dino_rect.y, game_speed]
+            data = np.asarray(data)
+            print(data)
+            actions = agent.predict(data)
+            print(actions)
+
+        player.draw(SCREEN)
+
+        player.update(actions)
 
         for obstacle in obstacles:
             obstacle.draw(SCREEN)
