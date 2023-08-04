@@ -1,3 +1,4 @@
+from utils.config import *
 import os
 import random
 from src.NN import Agent
@@ -8,9 +9,6 @@ import pygame
 pygame.init()
 
 # Global Constants
-
-SCREEN_HEIGHT = 600
-SCREEN_WIDTH = 1100
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 pygame.display.set_caption("Chrome Dino Runner")
@@ -280,7 +278,7 @@ def main():
                 obstacles.append(Bird(BIRD))
         else:
             data = [obstacles[0].rect.x, obstacles[0].rect.y,
-                    obstacles[0].rect.height,  obstacles[0].rect.width, player.dino_rect.y, game_speed]
+                    obstacles[0].rect.height,  obstacles[0].rect.width, player.dino_rect.x, player.dino_rect.y, game_speed]
             data = np.asarray(data)
             print(data)
             actions = agent.predict(data)
