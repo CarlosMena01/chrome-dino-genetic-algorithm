@@ -122,8 +122,8 @@ class Agent():
     The NN have as input 6 parameters
     1. The x coordenate of the obstacle
     2. The y coordenate of the obstacle
-    3. The high of the obstacle 
-    4. The weight of the obstacle
+    3. The height of the obstacle 
+    4. The width of the obstacle
     5. The y coordenate of the dino
     6. The velocity of the game 
     """
@@ -146,6 +146,13 @@ class Agent():
         return childern
 
     def predict(self, input: np.ndarray) -> np.ndarray:
+        """1. The x coordenate of the obstacle
+            2. The y coordenate of the obstacle
+            3. The height of the obstacle 
+            4. The width of the obstacle
+            5. The y coordenate of the dino
+            6. The velocity of the game 
+        """
         # Calculate the first layer (after the input)
         layer1 = np.zeros(nn_layers[1])
         # Get the ponderation for each connection
