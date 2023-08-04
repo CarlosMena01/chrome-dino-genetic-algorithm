@@ -45,11 +45,12 @@ class Gen():
         return self.code.copy()
 
     def set_code(self, code: list) -> None:
-        if (code[0] > 0) and (code[0] < (len(nn_layers)-1)):
+        self.code = [0, 0, 0, 0]
+        if ((code[0] >= 0) and (code[0] < (len(nn_layers)-1))):
             self.code[0] = int(code[0])
-        if (code[1] > 0) and (code[1] < nn_layers[self.code[0]]):
+        if ((code[1] >= 0) and (code[1] < nn_layers[self.code[0]])):
             self.code[1] = int(code[1])
-        if (code[2] > 0) and (code[2] < nn_layers[self.code[0] + 1]):
+        if ((code[2] >= 0) and (code[2] < nn_layers[self.code[0] + 1])):
             self.code[2] = int(code[2])
         self.code[3] = code[3]
 
