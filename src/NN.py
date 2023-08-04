@@ -1,7 +1,7 @@
 import numpy as np
 import random
 # This code just work for the example, so lets define the architecture
-nn_layers = [6, 6, 2]
+nn_layers = [7, 6, 2]
 chromosome_len = 24
 nn_umbral = 0.5
 
@@ -119,13 +119,14 @@ class Chromosome():
 class Agent():
     """ This class represent a Agent that based on his chromosome can make predictions
     the prediction have 2 values, in the game this values are the up-arrow and the down-arrow
-    The NN have as input 6 parameters
+    The NN have as input 7 parameters
     1. The x coordenate of the obstacle
     2. The y coordenate of the obstacle
     3. The height of the obstacle 
     4. The width of the obstacle
-    5. The y coordenate of the dino
-    6. The velocity of the game 
+    5. The x coordenate of the dino
+    6. The y coordenate of the dino
+    7. The velocity of the game 
     """
 
     global nn_layers, chromosome_len, nn_umbral
@@ -150,8 +151,9 @@ class Agent():
             2. The y coordenate of the obstacle
             3. The height of the obstacle 
             4. The width of the obstacle
-            5. The y coordenate of the dino
-            6. The velocity of the game 
+            5. The x coordenate of the dino
+            6. The y coordenate of the dino
+            7. The velocity of the game 
         """
         # Calculate the first layer (after the input)
         layer1 = np.zeros(nn_layers[1])
