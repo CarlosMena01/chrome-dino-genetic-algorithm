@@ -1,5 +1,6 @@
 import numpy as np
 import random
+from utils.config import *
 # This code just work for the example, so lets define the architecture
 nn_layers = [7, 6, 2]
 chromosome_len = 24
@@ -156,6 +157,14 @@ class Agent():
             6. The y coordenate of the dino
             7. The velocity of the game 
         """
+        # Normalize the input
+        def normalize(value, min, max):
+            return (value - min)/(max - min)
+
+        mins = np.asarray([0, 0, 0, 0, 0, 0, 0])
+        maxs = np.asarray([SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_HEIGHT,
+                          SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_HEIGHT, 100])
+        input = normalize(input, mins, maxs)
         # Calculate the first layer (after the input)
         layer1 = np.zeros(nn_layers[1])
         # Get the ponderation for each connection
