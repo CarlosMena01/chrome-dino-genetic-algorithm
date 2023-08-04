@@ -57,6 +57,7 @@ class Dinosaur:
     JUMP_VEL = 8.5
 
     def __init__(self):
+        self.agent = Agent()
         self.duck_img = DUCKING
         self.run_img = RUNNING
         self.jump_img = JUMPING
@@ -72,12 +73,7 @@ class Dinosaur:
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = self.Y_POS
 
-    def update(self, actions):
-        """This function define the action for the Dino
-
-        Args:
-            actions (list): A list with two values the first is for jumb and the second is for duck
-        """
+    def update(self, obstacles):
         if self.dino_duck:
             self.duck()
         if self.dino_run:
@@ -87,6 +83,13 @@ class Dinosaur:
 
         if self.step_index >= 10:
             self.step_index = 0
+
+        actions = [0, 0]
+        if len(obstacles) > 0:
+            data = [obstacles[0].rect.x, obstacles[0].rect.y,
+                    obstacles[0].rect.height,  obstacles[0].rect.width, self.dino_rect.x, self.dino_rect.y, game_speed]
+            data = np.asarray(data)
+            actions = self.agent.predict(data)
 
         if (actions[0] == 1) and not self.dino_jump:
             self.dino_duck = False
@@ -206,8 +209,6 @@ def main():
     death_count = 0
     pause = False
 
-    agent = Agent()
-
     def score():
         global points, game_speed
         points += 1
@@ -268,7 +269,6 @@ def main():
 
         SCREEN.fill((255, 255, 255))
 
-        actions = [0, 0]
         if len(obstacles) == 0:
             if random.randint(0, 2) == 0:
                 obstacles.append(SmallCactus(SMALL_CACTUS))
@@ -276,17 +276,10 @@ def main():
                 obstacles.append(LargeCactus(LARGE_CACTUS))
             elif random.randint(0, 2) == 2:
                 obstacles.append(Bird(BIRD))
-        else:
-            data = [obstacles[0].rect.x, obstacles[0].rect.y,
-                    obstacles[0].rect.height,  obstacles[0].rect.width, player.dino_rect.x, player.dino_rect.y, game_speed]
-            data = np.asarray(data)
-            print(data)
-            actions = agent.predict(data)
-            print(actions)
 
         player.draw(SCREEN)
 
-        player.update(actions)
+        player.update(obstacles)
 
         for obstacle in obstacles:
             obstacle.draw(SCREEN)
