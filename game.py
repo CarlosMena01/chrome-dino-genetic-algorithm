@@ -73,7 +73,12 @@ class Dinosaur:
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = self.Y_POS
 
-    def update(self, userInput):
+    def update(self, actions):
+        """This function define the action for the Dino
+
+        Args:
+            actions (list): A list with two values the first is for jumb and the second is for duck
+        """
         if self.dino_duck:
             self.duck()
         if self.dino_run:
@@ -84,15 +89,15 @@ class Dinosaur:
         if self.step_index >= 10:
             self.step_index = 0
 
-        if (userInput[pygame.K_UP] or userInput[pygame.K_SPACE]) and not self.dino_jump:
+        if (actions[0] == 1) and not self.dino_jump:
             self.dino_duck = False
             self.dino_run = False
             self.dino_jump = True
-        elif userInput[pygame.K_DOWN] and not self.dino_jump:
+        elif (actions[1] == 1) and not self.dino_jump:
             self.dino_duck = True
             self.dino_run = False
             self.dino_jump = False
-        elif not (self.dino_jump or userInput[pygame.K_DOWN]):
+        elif (sum(actions) == 0) and not self.dino_jump:  # Both are zero
             self.dino_duck = False
             self.dino_run = True
             self.dino_jump = False
@@ -172,7 +177,7 @@ class LargeCactus(Obstacle):
 
 
 class Bird(Obstacle):
-    BIRD_HEIGHTS = [250, 290, 320]
+    BIRD_HEIGHTS = [200, 250, 290, 320]
 
     def __init__(self, image):
         self.type = 0
@@ -265,7 +270,13 @@ def main():
         userInput = pygame.key.get_pressed()
 
         player.draw(SCREEN)
-        player.update(userInput)
+        if (userInput[pygame.K_UP] or userInput[pygame.K_SPACE]):
+            actions = [1, 0]
+        elif userInput[pygame.K_DOWN]:
+            actions = [0, 1]
+        elif not (userInput[pygame.K_UP] or userInput[pygame.K_DOWN]):
+            actions = [0, 0]
+        player.update(actions)
 
         if len(obstacles) == 0:
             if random.randint(0, 2) == 0:
