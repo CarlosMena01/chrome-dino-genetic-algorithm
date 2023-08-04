@@ -207,7 +207,7 @@ def main():
         points += 1
         if points % 100 == 0:
             game_speed += 1
-        with open("score.txt", "r") as f:
+        with open("./score.txt", "r") as f:
             score_ints = [int(x) for x in f.read().split()]
             highscore = max(score_ints)
             if points > highscore:
@@ -279,7 +279,7 @@ def main():
             obstacle.draw(SCREEN)
             obstacle.update()
             if player.dino_rect.colliderect(obstacle.rect):
-                f = open("score.txt", "a")
+                f = open("./score.txt", "a")
                 f.write(str(points) + "\n")
                 f.close()
                 pygame.time.delay(2000)
@@ -315,9 +315,7 @@ def menu(death_count):
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
             SCREEN.blit(score, scoreRect)
-            f = open("score.txt", "a")
-            f.close()
-            with open("score.txt", "r") as f:
+            with open("./score.txt", "r") as f:
                 score = (
                     f.read()
                 )  # Read all file in case values are not on a single line
