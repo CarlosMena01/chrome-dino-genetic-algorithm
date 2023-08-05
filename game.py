@@ -102,10 +102,11 @@ class Dinosaur:
             self.dino_duck = False
             self.dino_run = False
             self.dino_jump = True
-        elif (actions[1] == 1) and not self.dino_jump:
+        elif (actions[1] == 1):
             self.dino_duck = True
             self.dino_run = False
             self.dino_jump = False
+            self.jump_time = 0
         elif (sum(actions) == 0 or sum(actions) == 2) and not self.dino_jump:
             # If no specific action is predicted or both actions are predicted, run
             self.dino_duck = False
