@@ -6,6 +6,7 @@ chromosome_len = 24
 nn_umbral = 0.5
 
 mutation_range = [-1, 1]
+mutations_cuantity = 5
 
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
@@ -59,7 +60,7 @@ class Gen():
         self.code[3] = code[3]
 
     def mute(self) -> None:
-        for _ in range(random.randint(0, 5)):
+        for _ in range(random.randint(0, mutations_cuantity)):
             new_code = self.get_code()
             index = random.randint(0, 3)
             new_code[index] += mutation_range[0] + \
@@ -105,7 +106,7 @@ class Chromosome():
         return self.sequence.copy()
 
     def mute(self) -> None:
-        for _ in range(random.randint(0, 15)):
+        for _ in range(random.randint(0, mutations_cuantity)):
             new_sequence = self.get_sequence()
             index = random.randint(0, chromosome_len - 1)
             new_sequence[index].mute()
