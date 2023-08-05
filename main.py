@@ -3,23 +3,23 @@
 import random
 import numpy as np
 from src.NN import Agent
+from game import *
 
-agents_len = 1000
+agents_len = 100
 
 
 def iteration(population):
     # Run the simulation and asing the scores
     # TODO implement the simulation
-
+    print("Start the simulation")
+    dinos = []
     for agent in population:
-        for _ in range(100):
-            pred = agent.predict(np.asarray(
-                [random.random()*6 - 3 for _ in range(6)]))
-            agent.score += sum(pred)
-    for agent in population[:4]:
-        print(agent.score)
-    print("FINISH")
-
+        dinos.append(Dinosaur(agent))
+    dinos = main(dinos)
+    print("End simulation")
+    # Get again the agents
+    for i, dino in enumerate(dinos):
+        population[i] = dino.agent
     # Sort the agents based on their 'score' attribute in descending order
     population = sorted(population, key=lambda obj: obj.score, reverse=True)
     new_population = []
@@ -43,4 +43,5 @@ def iteration(population):
 
 # Create the first population
 population = [Agent() for _ in range(agents_len)]
-iteration(population)
+for _ in range(20):
+    population = iteration(population)
