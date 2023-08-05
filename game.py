@@ -221,7 +221,7 @@ class Bird(Obstacle):
         self.index += 1
 
 
-def main(players):
+def main(players, generation):
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles
     run = True
     clock = pygame.time.Clock()
@@ -236,21 +236,26 @@ def main(players):
     pause = False
 
     # Update the score and game speed
-    def score():
+    def description(generation, alive_players):
         global points, game_speed
         points += 1
         if points % 100 == 0:
             game_speed += 1
-        with open("./score.txt", "r") as f:
+        with open("./score.txt", "r+") as f:
             score_ints = [int(x) for x in f.read().split()]
             highscore = max(score_ints)
             if points > highscore:
                 highscore = points
-            text = font.render("High Score: " + str(highscore) +
-                               "  Points: " + str(points), True, FONT_COLOR)
-        textRect = text.get_rect()
-        textRect.center = (900, 40)
-        SCREEN.blit(text, textRect)
+                f.write(str(highscore)+"\n")
+
+        texts = [f"High Score: {highscore}", f"Current score: {points}",
+                 f"Alive count: {alive_players}", f"Generation: {generation}"]
+
+        for i, text in enumerate(texts):
+            text = font.render(text, True, FONT_COLOR)
+            textRect = text.get_rect()
+            textRect.center = (900, 40 + i*30)
+            SCREEN.blit(text, textRect)
 
     # Update the background's scrolling
     def background():
@@ -339,7 +344,7 @@ def main(players):
         cloud.update()
 
         # Update score and manage frame rate
-        score()
+        description(generation, len(players))
         clock.tick(30)
         pygame.display.update()
 
