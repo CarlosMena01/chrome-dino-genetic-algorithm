@@ -5,6 +5,8 @@ nn_layers = [7, 6, 2]
 chromosome_len = 24
 nn_umbral = 0.5
 
+mutation_range = [-1, 1]
+
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
 # Activation functions
@@ -60,7 +62,8 @@ class Gen():
         for _ in range(random.randint(0, 5)):
             new_code = self.get_code()
             index = random.randint(0, 3)
-            new_code[index] += (random.random() - 0.5)*4
+            new_code[index] += mutation_range[0] + \
+                random.random()*(mutation_range[1] - mutation_range[0])
             self.set_code(new_code)
 
 
