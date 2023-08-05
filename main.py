@@ -4,18 +4,17 @@ import random
 import numpy as np
 from src.NN import Agent
 from game import *
+from utils.config import *
 
-agents_len = 100
 
-
-def iteration(population):
+def iteration(population, generation):
     # Run the simulation and asing the scores
     # TODO implement the simulation
     print("Start the simulation")
     dinos = []
     for agent in population:
         dinos.append(Dinosaur(agent))
-    dinos = main(dinos)
+    dinos = main(dinos, generation)
     print("End simulation")
     # Get again the agents
     for i, dino in enumerate(dinos):
@@ -25,7 +24,24 @@ def iteration(population):
     new_population = []
     # Reproduce to create the new population
     # The reproduction is random and can be just a copy, a mix, mute or combination
-    for _ in range(agents_len):
+    # The random agents
+    for _ in range(int(agents_len*random_percent/100)):
+        new_population.append(Agent())
+    # The copies
+    for agent in population[:int(agents_len*copy_percent/100)]:
+        new_population.append(agent)
+    # The childrens
+    for _ in range(int(agents_len*childrens_percent/100)):
+        new_agent = population[random.randint(0, 4)]
+        new_agent = new_agent.reproduce(population[random.randint(0, 4)])
+        new_population.append(new_agent)
+    # The mutations
+    for _ in range(int(agents_len*muted_percent/100)):
+        new_agent = population[random.randint(0, 4)]
+        new_agent.mute()
+        new_population.append(new_agent)
+    # Others
+    while len(new_population) < agents_len:
         new_agent = Agent()  # Start as a random agent
         # Can be remplaced by a good agent
         if random.choice([True, False]):
@@ -35,7 +51,9 @@ def iteration(population):
             new_agent.mute()
         # Make some mixes with random (but hight score) match
         for _ in range(random.randint(0, 3)):
-            new_agent.reproduce(population[random.randint(0, 4)])
+            father = population[random.randint(0, 4)]
+            new_agent = new_agent.reproduce(father)
+
         new_population.append(new_agent)
 
     return new_population
@@ -43,5 +61,5 @@ def iteration(population):
 
 # Create the first population
 population = [Agent() for _ in range(agents_len)]
-for _ in range(20):
-    population = iteration(population)
+for i in range(20):
+    population = iteration(population, i+1)
