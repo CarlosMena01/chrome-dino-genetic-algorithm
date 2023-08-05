@@ -1,11 +1,12 @@
 import numpy as np
 import random
-from utils.config import *
 # This code just work for the example, so lets define the architecture
 nn_layers = [7, 6, 2]
 chromosome_len = 24
 nn_umbral = 0.5
 
+SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1100
 # Activation functions
 
 
@@ -135,6 +136,7 @@ class Agent():
 
     def __init__(self, chromosome=None) -> None:
         self.score = 0
+        self.chromosome = chromosome
         if type(chromosome) != Chromosome:
             self.chromosome = Chromosome()
         self.activation_function = leaky_relu
