@@ -50,14 +50,15 @@ FONT_COLOR = (0, 0, 0)
 
 
 class Dinosaur:
-
-    X_POS = int(40 + 40*random.random())
     Y_POS = 310
     Y_POS_DUCK = 340
-    JUMP_VEL = 8.5
 
-    def __init__(self):
-        self.agent = Agent()
+    def __init__(self, agent: Agent = None):
+        self.X_POS = int(20 + 80*random.random())
+        if agent == None:
+            self.agent = Agent()
+        else:
+            self.agent = agent
         self.duck_img = DUCKING
         self.run_img = RUNNING
         self.jump_img = JUMPING
@@ -67,7 +68,7 @@ class Dinosaur:
         self.dino_jump = False
 
         self.step_index = 0
-        self.jump_vel = self.JUMP_VEL
+        self.jump_time = 0
         self.image = self.run_img[0]
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = self.X_POS
@@ -119,13 +120,16 @@ class Dinosaur:
         self.step_index += 1
 
     def jump(self):
+        def f(x: float):
+            return -x*(x-1)*94*4*2
         self.image = self.jump_img
         if self.dino_jump:
-            self.dino_rect.y -= self.jump_vel * 4
-            self.jump_vel -= 0.8
-        if self.jump_vel < -self.JUMP_VEL:
+            self.dino_rect.y = self.Y_POS - f(self.jump_time)
+            self.jump_time += 0.05
+        if self.jump_time > 1.1:
+            self.jump_time = 0
             self.dino_jump = False
-            self.jump_vel = self.JUMP_VEL
+            self.dino_rect.y = self.Y_POS
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
@@ -292,7 +296,7 @@ def main(players):
                         for dino in death_players:
                             print(dino.agent.score)
                         pygame.time.delay(2000)
-                        menu(0)
+                        return death_players
 
         background()
 
@@ -351,6 +355,3 @@ def menu(death_count):
                 exit()
             if event.type == pygame.KEYDOWN:
                 main([Dinosaur() for _ in range(5)])
-
-
-menu(0)
