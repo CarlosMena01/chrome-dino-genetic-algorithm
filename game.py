@@ -331,9 +331,7 @@ def main(players, generation):
                     death_players.append(player)
                     players.remove(player)
                     if len(players) == 0:
-                        for dino in death_players:
-                            print(dino.agent.score)
-                        pygame.time.delay(2000)
+                        pygame.time.delay(1000)
                         return death_players
 
         # Update and draw background
