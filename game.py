@@ -51,7 +51,7 @@ FONT_COLOR = (0, 0, 0)
 
 class Dinosaur:
 
-    X_POS = 80
+    X_POS = int(40 + 40*random.random())
     Y_POS = 310
     Y_POS_DUCK = 340
     JUMP_VEL = 8.5
@@ -292,8 +292,7 @@ def main(players):
                         for dino in death_players:
                             print(dino.agent.score)
                         pygame.time.delay(2000)
-                        death_count += 1
-                        menu(death_count)
+                        menu(0)
 
         background()
 
