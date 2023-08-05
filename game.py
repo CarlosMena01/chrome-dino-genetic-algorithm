@@ -99,7 +99,7 @@ class Dinosaur:
             self.dino_duck = True
             self.dino_run = False
             self.dino_jump = False
-        elif (sum(actions) == 0 or sum(actions) == 2) and not self.dino_jump:  # Both are zero
+        elif (sum(actions) == 0 or sum(actions) == 2) and not self.dino_jump:  # Both are zero or one
             self.dino_duck = False
             self.dino_run = True
             self.dino_jump = False
@@ -194,11 +194,11 @@ class Bird(Obstacle):
         self.index += 1
 
 
-def main():
+def main(players):
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles
     run = True
     clock = pygame.time.Clock()
-    player = Dinosaur()
+    death_players = []
     cloud = Cloud()
     game_speed = 20
     x_pos_bg = 0
@@ -206,7 +206,6 @@ def main():
     points = 0
     font = pygame.font.Font("freesansbold.ttf", 20)
     obstacles = []
-    death_count = 0
     pause = False
 
     def score():
@@ -277,20 +276,24 @@ def main():
             elif random.randint(0, 2) == 2:
                 obstacles.append(Bird(BIRD))
 
-        player.draw(SCREEN)
-
-        player.update(obstacles)
+        for player in players:
+            player.draw(SCREEN)
+            player.update(obstacles)
 
         for obstacle in obstacles:
             obstacle.draw(SCREEN)
             obstacle.update()
-            if player.dino_rect.colliderect(obstacle.rect):
-                f = open("./score.txt", "a")
-                f.write(str(points) + "\n")
-                f.close()
-                pygame.time.delay(2000)
-                death_count += 1
-                menu(death_count)
+            for player in players:
+                if player.dino_rect.colliderect(obstacle.rect):
+                    player.agent.score = points
+                    death_players.append(player)
+                    players.remove(player)
+                    if len(players) == 0:
+                        for dino in death_players:
+                            print(dino.agent.score)
+                        pygame.time.delay(2000)
+                        death_count += 1
+                        menu(death_count)
 
         background()
 
@@ -348,7 +351,7 @@ def menu(death_count):
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN:
-                main()
+                main([Dinosaur() for _ in range(5)])
 
 
 menu(0)
