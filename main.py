@@ -9,13 +9,10 @@ from utils.config import *
 
 def iteration(population, generation):
     # Run the simulation and asing the scores
-    # TODO implement the simulation
-    print("Start the simulation")
     dinos = []
     for agent in population:
         dinos.append(Dinosaur(agent))
     dinos = main(dinos, generation)
-    print("End simulation")
     # Get again the agents
     for i, dino in enumerate(dinos):
         population[i] = dino.agent
@@ -28,16 +25,17 @@ def iteration(population, generation):
     for _ in range(int(agents_len*random_percent/100)):
         new_population.append(Agent())
     # The copies
-    for agent in population[:int(agents_len*copy_percent/100)]:
+    for i in range(int(agents_len*copy_percent/100)):
+        agent = Agent(population[i % 3].chromosome)
         new_population.append(agent)
     # The childrens
     for _ in range(int(agents_len*childrens_percent/100)):
-        new_agent = population[random.randint(0, 4)]
-        new_agent = new_agent.reproduce(population[random.randint(0, 4)])
+        new_agent = population[random.randint(0, 2)]
+        new_agent = new_agent.reproduce(population[random.randint(0, 2)])
         new_population.append(new_agent)
     # The mutations
     for _ in range(int(agents_len*muted_percent/100)):
-        new_agent = population[random.randint(0, 4)]
+        new_agent = population[random.randint(0, 2)]
         new_agent.mute()
         new_population.append(new_agent)
     # Others
@@ -51,8 +49,7 @@ def iteration(population, generation):
             new_agent.mute()
         # Make some mixes with random (but hight score) match
         for _ in range(random.randint(0, 3)):
-            father = population[random.randint(0, 4)]
-            new_agent = new_agent.reproduce(father)
+            new_agent = new_agent.reproduce(population[random.randint(0, 2)])
 
         new_population.append(new_agent)
 
