@@ -6,7 +6,7 @@ chromosome_len = 24
 nn_umbral = 0.5
 
 mutation_range = [-1, 1]
-mutations_cuantity = 5
+mutations_cuantity = 2
 
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
