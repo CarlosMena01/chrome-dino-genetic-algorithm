@@ -59,6 +59,12 @@ class Gen():
             self.code[2] = int(code[2])
         self.code[3] = code[3]
 
+    def get_start_neuron(self) -> tuple:
+        return (self.code[0], self.code[1])
+
+    def get_end_neuron(self) -> tuple:
+        return (self.code[0] + 1, self.code[2])
+
     def mute(self) -> None:
         for _ in range(random.randint(0, mutations_cuantity)):
             new_code = self.get_code()
@@ -93,6 +99,7 @@ class Chromosome():
         return text
 
     def set_sequence(self, sequence) -> None:
+        # Check the sequence, need the specific len and all elements be Gen
         if len(sequence) != chromosome_len:
             print(f"The sequence need {chromosome_len} elements")
             return None
@@ -100,7 +107,36 @@ class Chromosome():
             if type(element) != Gen:
                 print(f"The element {i} is not a Gen is {type(element)}")
                 return None
-        self.sequence = sequence
+        # Now, for optimization, if some gen have the same start and end neuron then
+        # replace the gen with other randomn gen.
+
+        def replace_duplicates_with_random(first_sequence) -> tuple:
+            print(type(first_sequence[0]))
+            seen = {}  # Dictionary to keep track of seen lists
+            result = []  # List to store the final result
+
+            count = 0  # Counter for duplicates elements
+
+            for gen in first_sequence:
+                code = gen.get_code()
+                key = tuple(code[:3])  # Use the first three elements as a key
+
+                if key in seen:
+                    # If duplicate found, replace with random elements
+                    random_elements = [random.randint(0, len(nn_layers) - 1), random.randint(
+                        0, nn_layers[0]), random.randint(0, nn_layers[0]), code[3]]
+                    result.append(Gen(random_elements))
+                    count += 1
+                else:
+                    seen[key] = code[:3]
+                    result.append(Gen(code))
+            return (result, count)
+        duplicates = 1
+        final_sequence = sequence
+        while duplicates != 0:
+            final_sequence, duplicates = replace_duplicates_with_random(
+                final_sequence)
+        self.sequence = final_sequence
 
     def get_sequence(self) -> list:
         return self.sequence.copy()
