@@ -2,7 +2,7 @@
 from utils.config import *
 import os
 import random
-from src.NN import Agent
+from src.NN import Agent, nn_layers
 import numpy as np
 import pygame
 
@@ -112,6 +112,7 @@ class Dinosaur:
             self.dino_duck = False
             self.dino_run = True
             self.dino_jump = False
+        return actions
 
     def duck(self):
         # Update the dinosaur's image and position when ducking
@@ -222,6 +223,66 @@ class Bird(Obstacle):
         self.index += 1
 
 
+class Network:
+    font = pygame.font.Font("freesansbold.ttf", 12)
+
+    def __init__(self, sequence, x=500, y_center=140) -> None:
+        self.sequence = sequence
+        self.x = x
+        self.y_center = y_center
+
+    def draw(self, SCREEN, actions):
+        # Draw a Neuronal Network from a sequence of chromosome
+        inputs = ["X (obstacle)", "Y (obstacle)",
+                  "Height (obstacle)", "Width(obstacle)",
+                  "X (player)", "Y (player)", "Velocity"]
+        # Draw the layers of the NN
+        color = (100, 100, 100)
+        active_color = (0, 255, 0)
+        color_line = (0, 255, 0)
+        # This function calculate the position on the SCREEN for each Neuron
+
+        def get_coordenates(layer: int, index: int) -> tuple:
+            x = self.x + layer*100
+            y = self.y_center - nn_layers[layer] * \
+                35//2 + 35*index  # A line center on 140
+            return (x, y)
+
+        # Draw the connections
+        for gen in self.sequence:
+            code = gen.get_code()
+            pygame.draw.line(SCREEN, color_line,
+                             get_coordenates(code[0], code[1]), get_coordenates(code[0]+1, code[2]), 5)
+
+        # Draw the circles
+        for j, layers in enumerate(nn_layers[:-1]):
+            for i in range(layers):
+                pygame.draw.circle(
+                    SCREEN, color, get_coordenates(j, i), 12, 12)
+
+        # Draw the last neurons
+        if actions[0] == 1:
+            pygame.draw.circle(
+                SCREEN, active_color, get_coordenates(len(nn_layers)-1, 0), 12, 12)
+        else:
+            pygame.draw.circle(
+                SCREEN, color, get_coordenates(len(nn_layers)-1, 0), 12, 12)
+        if actions[1] == 1:
+            pygame.draw.circle(
+                SCREEN, active_color, get_coordenates(len(nn_layers)-1, 1), 12, 12)
+        else:
+            pygame.draw.circle(
+                SCREEN, color, get_coordenates(len(nn_layers)-1, 1), 12, 12)
+
+        # Write the inputs name
+        for i, input in enumerate(inputs):
+            text = self.font.render(input, True, FONT_COLOR)
+            textRect = text.get_rect()
+            (_, textRect.y) = get_coordenates(0, i)
+            textRect.x = self.x - 120
+            SCREEN.blit(text, textRect)
+
+
 def main(players, generation):
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles
     run = True
@@ -235,6 +296,8 @@ def main(players, generation):
     font = pygame.font.Font("freesansbold.ttf", 20)
     obstacles = []
     pause = False
+
+    network = Network(players[0].agent.chromosome.get_sequence())
 
     # Update the score and game speed
     def description(generation, alive_players):
@@ -318,7 +381,7 @@ def main(players, generation):
         # Update and draw players
         for player in players:
             player.draw(SCREEN)
-            player.update(obstacles)
+            actions = player.update(obstacles)
 
         # Update and draw obstacles
         for obstacle in obstacles:
@@ -341,6 +404,10 @@ def main(players, generation):
         # Update and draw cloud
         cloud.draw(SCREEN)
         cloud.update()
+
+        # Draw the Neuronal Network
+        network = Network(players[-1].agent.chromosome.get_sequence())
+        network.draw(SCREEN, actions)
 
         # Update score and manage frame rate
         description(generation, len(players))
