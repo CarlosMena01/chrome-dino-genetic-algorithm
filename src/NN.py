@@ -40,6 +40,11 @@ class Gen():
         self.code = [0, 0, 0, 0]
         self.set_code(code)
 
+    def __eq__(self, __value: object) -> bool:
+        if isinstance(__value, Gen):
+            return __value.get_code() == self.get_code()
+        return False
+
     def __str__(self) -> str:
         return str(self.get_code())
 
@@ -111,7 +116,6 @@ class Chromosome():
         # replace the gen with other randomn gen.
 
         def replace_duplicates_with_random(first_sequence) -> tuple:
-            print(type(first_sequence[0]))
             seen = {}  # Dictionary to keep track of seen lists
             result = []  # List to store the final result
 
@@ -181,6 +185,18 @@ class Agent():
             self.chromosome = Chromosome()
         self.activation_function = leaky_relu
         self.final_fuction = sigmoid
+
+    def __eq__(self, __value: object) -> bool:
+        if isinstance(__value, Agent):
+            return __value.chromosome.get_sequence() == self.chromosome.get_sequence()
+        return False
+
+    def __hash__(self):
+        data = []
+        for gen in self.chromosome.get_sequence():
+            data.append(tuple(gen.get_code()))
+        data = tuple(data)
+        return hash(data)
 
     def mute(self) -> None:
         self.chromosome.mute()
