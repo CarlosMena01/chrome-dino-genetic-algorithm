@@ -10,6 +10,26 @@ from datetime import date
 path = "./data/"
 
 
+def remove_duplicates(input_list):
+    """This function remove the duplicate instances from a list
+
+    Args:
+        input_list (list): List of instances of some class
+
+    Returns:
+        list: The same list without duplicates
+    """
+    seen_instances = set()
+    unique_instances = []
+
+    for instance in input_list:
+        if instance not in seen_instances:
+            seen_instances.add(instance)
+            unique_instances.append(instance)
+
+    return unique_instances
+
+
 def iteration(population, generation):
     # Run the simulation and asing the scores
     dinos = []
@@ -51,6 +71,10 @@ def iteration(population, generation):
         new_agent = population[random.randint(0, 2)]
         new_agent.mute()
         new_population.append(new_agent)
+
+    # No duplicates on the generation
+    new_population = remove_duplicates(new_population)
+
     # Others
     while len(new_population) < agents_len:
         new_agent = Agent()  # Start as a random agent
@@ -64,7 +88,8 @@ def iteration(population, generation):
         for _ in range(random.randint(0, 3)):
             new_agent = new_agent.reproduce(population[random.randint(0, 2)])
 
-        new_population.append(new_agent)
+        if new_agent not in new_population:
+            new_population.append(new_agent)
 
     return new_population
 
