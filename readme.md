@@ -2,15 +2,20 @@
 
 This project implements a genetic algorithm to evolve neural networks for playing the Chrome Dino runner game. The goal is to train agents that can navigate obstacles and achieve high scores in the game.
 
+![](https://github.com/CarlosMena01/chrome-dino-genetic-algorithm/blob/main/Dino_Runner.gif)
+
 ## Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [Configuration](#configuration)
-- [Results](#results)
-- [Contributing](#contributing)
-- [License](#license)
+- [Genetic Algorithm-Based Neural Network for Dino Runner AI](#genetic-algorithm-based-neural-network-for-dino-runner-ai)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Features](#features)
+    - [The Game](#the-game)
+    - [The Machine Learning Algorithms](#the-machine-learning-algorithms)
+    - [The Simulation](#the-simulation)
+  - [Getting Started](#getting-started)
+  - [Configuration](#configuration)
+  - [Results](#results)
 
 ## Overview
 
@@ -92,4 +97,8 @@ You can configurete some parameters of the project from the `utils/config.py` fi
 
 ## Results
 
+You can get all the necesary information from the simulation in the path `data/*.txt`
+
 ---
+
+Enjoy the project :3
